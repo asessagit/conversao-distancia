@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import logging
 import socket  # Módulo para obter informações do servidor
 
@@ -49,8 +49,16 @@ def index():
 
         return render_template('index.html', conteudo={'unidade': unidade, 'valor': resultado}, hostname=hostname, ip_address=ip_address)
 
+@app.route('/healthz')
+def healthz():
+    return jsonify({"status": "healthy"}), 200
+
+@app.route('/ready')
+def ready():
+    return jsonify({"status": "ready"}), 200
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
 else:
     gunicorn_logger = logging.getLogger('gunicorn.error')
     app.logger.handlers = gunicorn_logger.handlers

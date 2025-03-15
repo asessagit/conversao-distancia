@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conversao-distancia
+  labels:
+    app: conversao-distancia
+  annotations:
+    description: "Deployment para o serviço de conversão de distância"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: conversao-distancia
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: conversao-distancia
+    spec:
+      containers:
+        - name: conversao-distancia
+          image: alexsessa/conversao-distancia:v1
+          ports:
+          - containerPort: 5000
+          resources:
+            limits:
+              memory: "2Gi"
+              cpu: "2"
+            requests:
+              memory: "1Gi"
+              cpu: "1"
+          env:
+            - name: ENVIRONMENT
+              value: "production"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: config-volume
+          configMap:
+            name: conversao-distancia-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: conversao-distancia
+  labels:
+    app: conversao-distancia
+spec:
+  selector:
+    app: conversao-distancia
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: NodePort
