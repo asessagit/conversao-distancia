@@ -23,16 +23,16 @@ spec:
     spec:
       containers:
         - name: conversao-distancia
-          image: alexsessa/conversao-distancia:v1
+          image: alexsessa/conversao-distancia:v2
           ports:
           - containerPort: 5000
           resources:
             limits:
+              memory: "4Gi"
+              cpu: "4"
+            requests:
               memory: "2Gi"
               cpu: "2"
-            requests:
-              memory: "1Gi"
-              cpu: "1"
           env:
             - name: ENVIRONMENT
               value: "production"
@@ -43,18 +43,18 @@ spec:
             httpGet:
               path: /
               port: 5000
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 5
           readinessProbe:
             httpGet:
               path: /
               port: 5000
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 5
       volumes:
         - name: config-volume
           configMap:

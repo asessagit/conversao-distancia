@@ -129,3 +129,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 notes.md
+k8s/
+deployment.yaml
+components.yaml
+amazon-eks-vpc-private-subnets.yaml
+DevOps Kubernetes - visual selection (10).png
+DevOps Kubernetes - visual selection (31).png
